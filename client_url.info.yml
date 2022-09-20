@@ -1,0 +1,8 @@
+name: Client URL
+type: module
+description: Defines a field type for Client URL.
+package: Field types
+core_version_requirement: ^8.8 || ^9
+dependencies:
+  - drupal:field
+  - drupal:node
