@@ -2,12 +2,12 @@
 
 namespace Drupal\client_url\Plugin\Field\FieldType;
 
-use Drupal\Core\Field\FieldFilteredMarkup;
+use Drupal\Core\Field\FieldItemBase;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\TypedData\DataDefinition;
 
 /**
- * Plugin implementation of the 'client_url_item' field type.
+ * Plugin implementation of the 'client_url' field type.
  *
  * @FieldType(
  *   id = "client_url",
