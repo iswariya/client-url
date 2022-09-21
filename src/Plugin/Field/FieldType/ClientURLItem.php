@@ -24,10 +24,11 @@ class ClientURLItem extends FieldItemBase {
    * {@inheritdoc}
    */
   public static function propertyDefinitions(FieldStorageDefinitionInterface $field_definition) {
-    $properties['value'] = DataDefinition::create('string')
-      ->setLabel(t('Client URL value'))
-      ->addConstraint('Length', ['max' => 255])
-      ->setRequired(TRUE);
+    $client_urls = \Drupal::service('client_url.basic')->getClientURLs();
+    foreach ($client_urls as $key => $client_url) {
+      $properties[$key] = DataDefinition::create('boolean')
+        ->setLabel($client_url);
+    }
 
     return $properties;
   }
@@ -36,25 +37,37 @@ class ClientURLItem extends FieldItemBase {
    * {@inheritdoc}
    */
   public static function schema(FieldStorageDefinitionInterface $field_definition) {
-    return [
-      'columns' => [
-        'value' => [
-          'type' => 'varchar',
-          'length' => 255,
-        ],
-      ],
-      'indexes' => [
-        'value' => ['value'],
-      ],
-    ];
+    // Make a column for every URL.
+    $client_urls = \Drupal::service('client_url.basic')->getClientURLs();
+    foreach ($client_urls as $key => $client_url) {
+      $output['columns'][$key] = array(
+        'type' => 'int',
+        'length' => 1,
+      );
+    }
+
+    return $output;
   }
 
   /**
    * {@inheritdoc}
    */
   public function isEmpty() {
-    $value = $this->get('value')->getValue();
-    return $value === NULL || $value === '';
+
+    $item = $this->getValue();
+
+    $has_url = FALSE;
+
+    // See if any of the url checkboxes have been checked off.
+    $client_urls = \Drupal::service('client_url.basic')->getClientURLs();
+    foreach ($client_urls as $key => $client_url) {
+      if (isset($item[$key]) && $item[$key] == 1) {
+        $has_url = TRUE;
+        break;
+      }
+    }
+
+    return !$has_url;
   }
 
 }

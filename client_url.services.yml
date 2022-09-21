@@ -1,0 +1,4 @@
+services:
+  client_url.basic:
+    class: Drupal\client_url\Controller\ClientURLController
+    arguments: ['@extension.list.module']
