@@ -4,11 +4,8 @@ namespace Drupal\client_url\Plugin\Field\FieldWidget;
 
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\WidgetBase;
+use Drupal\Core\Field\WidgetInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\client_url\Controller\ClientURLController;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\Core\Field\FieldDefinitionInterface;
 
 /**
  * Plugin implementation of the 'client_url' widget.
@@ -22,35 +19,7 @@ use Drupal\Core\Field\FieldDefinitionInterface;
  *   }
  * )
  */
-class ClientURLWidget extends WidgetBase implements ContainerFactoryPluginInterface {
-
-  /**
-   * ClientURLController.
-   *
-   * @var \Drupal\client_url\Controller\ClientURLController
-   */
-  protected $clientURLController;
-
-  /**
-   * {@inheritdoc}
-   */
-  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, array $third_party_settings, ClientURLController $client_url_controller) {
-    $this->clientURLController = $client_url_controller;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    return new static(
-      $plugin_id,
-      $plugin_definition,
-      $configuration['field_definition'],
-      $configuration['settings'],
-      $configuration['third_party_settings'],
-      $container->get('client_url.basic')
-    );
-  }
+class ClientURLWidget extends WidgetBase implements WidgetInterface {
 
   /**
    * {@inheritdoc}
@@ -59,32 +28,20 @@ class ClientURLWidget extends WidgetBase implements ContainerFactoryPluginInterf
     // $item is where the current saved values are stored.
     $item =& $items[$delta];
 
-    // $element is already populated with #title, #description, #delta,
-    // #required, #field_parents, etc.
-    //
-    // In this example, $element is a fieldset, but it could be any element
-    // type (textfield, checkbox, etc.)
-
-    $element += array(
-      '#type' => 'fieldset',
-    );
-
     $element['client_urls'] = [
       '#title' => t('Client URLs'),
       '#type' => 'fieldset',
-      '#process' => [
-        $this->processURLsFieldset()
-      ],
+      '#process' => array(__CLASS__ . '::processURLsFieldset'),
     ];
 
-    // Create a checkbox item for each topping on the menu.
-    $client_urls = $this->clientURLController->getClientURLs();
+    // Create a checkbox item for each URL.
+    $client_urls = \Drupal::service('client_url.basic')->getClientURLs();
     foreach ($client_urls as $key => $client_url) {
-      $element['client_urls'][$key] = array(
-        '#title' => t($client_url),
+      $element['client_urls'][$key] = [
+        '#title' => $client_url,
         '#type' => 'checkbox',
         '#default_value' => isset($item->$key) ? $item->$key : '',
-      );
+      ];
     }
 
     return $element;

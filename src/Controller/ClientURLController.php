@@ -50,7 +50,7 @@ class ClientURLController extends ControllerBase {
     $output = [];
     foreach ($client_urls as $client_url) {
       $key = str_replace('.', '_', $client_url);
-      $output[$key] = $client_urls;
+      $output[$key] = $client_url;
     }
     return $output;
   }
