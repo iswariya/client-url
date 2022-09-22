@@ -38,7 +38,7 @@ class ClientURLWidget extends WidgetBase implements WidgetInterface {
     $client_urls = \Drupal::service('client_url.basic')->getClientURLs();
     foreach ($client_urls as $key => $client_url) {
       $element['client_urls'][$key] = [
-        '#title' => $client_url,
+        '#title' => t($client_url),
         '#type' => 'checkbox',
         '#default_value' => isset($item->$key) ? $item->$key : '',
       ];

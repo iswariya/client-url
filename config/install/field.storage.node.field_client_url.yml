@@ -1,0 +1,19 @@
+uuid: 027bef47-35ae-46ed-aee2-bfdeb907b071
+langcode: en
+status: true
+dependencies:
+  module:
+    - client_url
+    - node
+id: node.field_client_url
+field_name: field_client_url
+entity_type: node
+type: client_url
+settings: {  }
+module: client_url
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

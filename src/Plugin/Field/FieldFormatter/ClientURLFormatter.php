@@ -32,10 +32,27 @@ class ClientURLFormatter extends FormatterBase {
    */
   public function viewElements(FieldItemListInterface $items, $langcode) {
     $element = [];
-
+    $urls = [];
+    $client_urls = \Drupal::service('client_url.basic')->getClientURLs();
     foreach ($items as $delta => $item) {
+      $values = $item->getValue();
+      $counts = array_count_values($values);
       // Render each element as markup.
-      $element[$delta] = ['#markup' => $item->value];
+      foreach ($values as $key => $value) {
+        if ($value == 1) {
+          $url = $client_urls[$key];
+          if ($counts[1] == count($client_urls)) {
+            preg_match('/[a-z0-9][a-z0-9\-]{0,63}\.[a-z]{2,6}(\.[a-z]{1,2})?$/i', $url, $match);
+            if (!in_array($match[0], $urls)) {
+              $urls[] = $match[0];
+              $element[] = ['#markup' => $match[0]];
+            }
+          }
+          else {
+            $element[] = ['#markup' => $url];
+          }
+        }
+      }
     }
 
     return $element;
