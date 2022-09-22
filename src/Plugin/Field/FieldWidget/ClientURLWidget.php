@@ -52,7 +52,7 @@ class ClientURLWidget extends WidgetBase implements WidgetInterface {
    */
   public static function processURLsFieldset($element, FormStateInterface $form_state, array $form) {
 
-    // The last fragment of the name, i.e. meat|toppings is not required
+    // The last fragment of the name is not required
     // for structuring of values.
     $elem_key = array_pop($element['#parents']);
 
